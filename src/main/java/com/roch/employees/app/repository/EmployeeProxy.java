@@ -86,6 +86,24 @@ public class EmployeeProxy {
     }
 
     /**
+     * Get a specific employees by its id.
+     *
+     * @return A fulfilled employee object.
+     */
+    public Employee getEmployee(@NonNull int id) {
+        String baseURL = properties.getApiUrl() + "/employees/" + id;
+
+        RestTemplate template = new RestTemplate();
+        ResponseEntity<Employee> response = template.exchange(
+                baseURL,
+                HttpMethod.GET,
+                null,
+                Employee.class);
+        log.debug("HTTP status for get specific employee: {}", response.getStatusCode());
+        return response.getBody();
+    }
+
+    /**
      * Get all available employees from API.
      *
      * @return An iterable of all employees.

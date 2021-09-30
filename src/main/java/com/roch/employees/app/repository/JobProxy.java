@@ -1,7 +1,6 @@
 package com.roch.employees.app.repository;
 
 import com.roch.employees.app.CustomProperties;
-import com.roch.employees.app.model.Employee;
 import com.roch.employees.app.model.Job;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
  * @author Roch Blondiaux
  * www.roch-blondiaux.com
  */
-@Slf4j(topic = "Employee Proxy")
+@Slf4j(topic = "Job Proxy")
 @Component
 public class JobProxy {
 
@@ -72,7 +71,7 @@ public class JobProxy {
      * @return true if it has been deleted successfully, otherwise false
      */
     public boolean delete(@NonNull Job job) {
-        String baseURL = properties.getApiUrl() + "/employees";
+        String baseURL = properties.getApiUrl() + "/jobs";
 
         RestTemplate template = new RestTemplate();
         HttpEntity<Job> httpEntity = new HttpEntity<>(job);
@@ -87,15 +86,33 @@ public class JobProxy {
     }
 
     /**
+     * Get a specific job by its id.
+     *
+     * @return A fulfilled job object.
+     */
+    public Job getJob(@NonNull String name) {
+        String baseURL = properties.getApiUrl() + "/jobs/" + name;
+
+        RestTemplate template = new RestTemplate();
+        ResponseEntity<Job> response = template.exchange(
+                baseURL,
+                HttpMethod.GET,
+                null,
+                Job.class);
+        log.debug("HTTP status for get specific job: {}", response.getStatusCode());
+        return response.getBody();
+    }
+
+    /**
      * Get all available jobs from API.
      *
      * @return An iterable of all jobs.
      */
-    public Iterable<Employee> getJobs() {
+    public Iterable<Job> getJobs() {
         String baseURL = properties.getApiUrl() + "/jobs";
 
         RestTemplate template = new RestTemplate();
-        ResponseEntity<Iterable<Employee>> response = template.exchange(
+        ResponseEntity<Iterable<Job>> response = template.exchange(
                 baseURL,
                 HttpMethod.GET,
                 null,
